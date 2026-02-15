@@ -104,7 +104,7 @@ public class GameJFrame extends JFrame {
         // 把tempArr里的数据复制到data里
         index = 0;
         for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data.length; j++) {
+            for (int j = 0; j < data[0].length; j++) {
                 data[i][j] = tempArr[index];
                 index++;
             }
@@ -117,7 +117,7 @@ public class GameJFrame extends JFrame {
     // 初始化图片
     private void initPic() {
         for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data.length; j++) {
+            for (int j = 0; j < data[0].length; j++) {
                 // 不加载最后一个数
                 int num = data[i][j];
                 if (num == 16) continue;
