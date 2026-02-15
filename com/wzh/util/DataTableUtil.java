@@ -29,6 +29,21 @@ public class DataTableUtil {
     }
 
     // 判断选中的坐标是否合理
+    public static boolean CanMove(Point ClickPoint, int[][] data) {
+        Point emptyPos = FindEmptyPos(data);
+
+        // 同行
+        if (ClickPoint.x == emptyPos.x) {
+            return Math.abs(ClickPoint.y - emptyPos.y) == 1;
+        }
+
+        // 同列
+        if (ClickPoint.y == emptyPos.y) {
+            return Math.abs(ClickPoint.x - emptyPos.x) == 1;
+        }
+
+        return false;
+    }
 
     // 对data里的数据进行改动
     public static void ChangeData(Point ClickPoint, int[][] data) {
