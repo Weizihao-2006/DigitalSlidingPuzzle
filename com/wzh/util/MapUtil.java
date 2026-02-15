@@ -12,7 +12,7 @@ public class MapUtil {
     }
 
     public static Point ConvertMapPosToActPos(Point p) {
-        return new Point((PIC_SIZE + GAP_SIZE) * p.x, (PIC_SIZE + GAP_SIZE) * p.y);
+        return new Point((PIC_SIZE + GAP_SIZE) * p.y, (PIC_SIZE + GAP_SIZE) * p.x);
     }
 
     public static Point ConvertMapPosToActPos(int x, int y) {

@@ -1,13 +1,13 @@
 package com.wzh.ui;
 
 import com.wzh.classes.NumLabel;
+import com.wzh.util.DataTableUtil;
 import com.wzh.util.MapUtil;
 import com.wzh.util.NumLabelUtil;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.Random;
 
 import static com.wzh.util.MapUtil.*;
@@ -27,8 +27,9 @@ public class GameJFrame extends JFrame {
 
         initFrame(width, height);
         initJMenuBar();
-        initData();
-        initPic();
+        // initData();
+        // initPic();
+        restartGame();
 
         // 最后再把界面设为可视化
         this.setVisible(true);
@@ -52,8 +53,22 @@ public class GameJFrame extends JFrame {
 
         // 小项
         JMenuItem restartItem = new JMenuItem("重新开始");
+        restartItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                restartGame();
+            }
+        });
+
         JMenuItem reloginItem = new JMenuItem("重新登录");
+
         JMenuItem exitItem = new JMenuItem("退出游戏");
+        exitItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
 
         JMenuItem aboutUsItem = new JMenuItem("公众号");
 
@@ -94,6 +109,9 @@ public class GameJFrame extends JFrame {
                 index++;
             }
         }
+
+        // 测试代码
+        // data = new int[][]{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 16, 15}};
     }
 
     // 初始化图片
@@ -130,7 +148,18 @@ public class GameJFrame extends JFrame {
                 label.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
+                        // 移动方块
                         NumLabelUtil.MoveLabel(label, data);
+
+                        // 移动完检查游戏是否结束
+                        if (DataTableUtil.JudgeWin(data)) {
+                            // 取消所有监听器
+                            disableAllListeners();
+                            // 放出胜利提醒
+                            showWinPane();
+                        }
+
+                        // 更新画面
                         SwingUtilities.updateComponentTreeUI(GameJFrame.this);
                     }
                 });
@@ -138,5 +167,66 @@ public class GameJFrame extends JFrame {
                 this.getContentPane().add(label);
             }
         }
+    }
+
+    // 重新开始游戏
+    private void restartGame() {
+        // 正好可以把幕布也删掉
+        this.getContentPane().removeAll();
+
+        // 初始化数据
+        initData();
+        initPic();
+
+        this.getContentPane().repaint();
+    }
+
+    // 取消所有方块的监听器
+    private void disableAllListeners() {
+        Component[] components = this.getContentPane().getComponents();
+        for (Component comp : components) {
+            if (comp instanceof NumLabel) {
+                MouseListener[] listeners = comp.getMouseListeners();
+                for (MouseListener lis : listeners) {
+                    comp.removeMouseListener(lis);
+                }
+            }
+        }
+    }
+
+    // 展示胜利动画
+    private void showWinPane() {
+        // 创建一个自定义绘制背景的子类
+        JPanel mask = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                // 这里是实现半透明的关键
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setColor(new Color(0, 0, 0, 150)); // 黑色的 RGBA，150 是透明度(0-255)
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+                g2d.dispose();
+                super.paintComponent(g);
+            }
+        };
+
+        // 设置背景透明
+        mask.setOpaque(false);
+        mask.setBounds(0, 0, this.getContentPane().getWidth(), this.getContentPane().getHeight());
+        mask.setLayout(new BorderLayout());
+
+        // 添加文字提醒
+        JLabel winText = new JLabel("YOU WIN!");
+        winText.setForeground(Color.YELLOW);
+        winText.setFont(new Font("微软雅黑", Font.BOLD, 50));
+        winText.setHorizontalAlignment(SwingConstants.CENTER);
+        mask.add(winText);
+
+        // 加到ContentPane里
+        this.getContentPane().add(mask);
+        this.getContentPane().setComponentZOrder(mask, 0);
+
+        // 刷新
+        this.getLayeredPane().revalidate();
+        this.getLayeredPane().repaint();
     }
 }

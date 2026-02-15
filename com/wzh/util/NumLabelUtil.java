@@ -9,7 +9,10 @@ public class NumLabelUtil {
     private NumLabelUtil() {
     }
 
+    // label监听器的回调函数
     public static void MoveLabel(NumLabel label, int[][] data) {
+        if (!DataTableUtil.CanMove(label.getPoint(), data)) return;
+
         Point emptyPos = DataTableUtil.FindEmptyPos(data);
 
         // 对data的改动，调用util里的方法
