@@ -27,8 +27,6 @@ public class GameJFrame extends JFrame {
 
         initFrame(width, height);
         initJMenuBar();
-        // initData();
-        // initPic();
         restartGame();
 
         // 最后再把界面设为可视化
