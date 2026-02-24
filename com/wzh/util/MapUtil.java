@@ -3,10 +3,10 @@ package com.wzh.util;
 import java.awt.*;
 
 public class MapUtil {
-    public static final int GAME_WIDTH = 488;
-    public static final int GAME_HEIGHT = 500;
     public static final int PIC_SIZE = 105;
     public static final int GAP_SIZE = 5;
+    public static final int GAME_WIDTH = 4*PIC_SIZE+5*GAP_SIZE;
+    public static final int GAME_HEIGHT = 500;    
 
     private MapUtil() {
     }
